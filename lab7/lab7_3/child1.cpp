@@ -4,6 +4,8 @@
 
 using namespace std;
 
+int cnt = 0;
+
 void signal_handler(int signum, siginfo_t* info, void* context) {
     cout << "Child 1 received response signal " << signum << " from child 2" << endl;
     sleep(1);

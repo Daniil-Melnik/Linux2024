@@ -6,8 +6,24 @@
 
 using namespace std;
 
+
+void handler(int signum) {
+    cout << "parent had signal" << signum << endl;
+    sleep(1);
+}
+
+
 int main() {
     pid_t pid1, pid2;
+
+    // Set up signal handlers
+    struct sigaction sa;
+    sa.sa_handler = &handler; // Ignore the signal
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags = 0;
+
+    sigaction(SIGRTMIN + 1, &sa, NULL);
+    sigaction(SIGRTMIN + 2, &sa, NULL);
 
     // Create child 1
     pid1 = fork();
@@ -25,8 +41,10 @@ int main() {
             if (pid1 > 0 && pid2 > 0){
                 cout << "Both process started" << endl;
             }
-            waitpid(pid1, NULL, 0);
-            waitpid(pid2, NULL, 0);
+
+            int status;
+            waitpid(pid1, &status, 0);
+            waitpid(pid2, &status, 0);
 
             cout << "parent end" << endl;
         }
