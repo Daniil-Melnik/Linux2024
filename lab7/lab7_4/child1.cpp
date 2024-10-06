@@ -15,7 +15,7 @@ void signal_handler(int signum, siginfo_t* info, void* context) {
     cout << "Child 1 received response signal " << signum << " from child 2" << endl;
     sleep(1);
     if (pipe_read_is_done = read(fildes[0], &ch, 1) > 0){
-        cout << "#" << ch << endl;
+        cout << "child 1 #" << ch << endl;
     }
     int signal_value = SIGRTMIN + 1; // define custom signal value
     kill(0, signal_value);

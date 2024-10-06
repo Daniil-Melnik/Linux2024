@@ -27,7 +27,7 @@ int main() {
     sigaction(SIGRTMIN + 1, &sa, NULL);
     sigaction(SIGRTMIN + 2, &sa, NULL);
 
-    char ch[] = "12345678";
+    char ch[] = "12345\n";
 
     int fildes[2]; // обработчики каналов, fildes[0] -- чтение из канала, fildes[1] -- запись в канал
 
@@ -39,7 +39,7 @@ int main() {
     cout <<"pipe success\n";
 
     write(fildes[1], ch, strlen(ch) - 1); // запись данных в канал
-    cout << "pipe written" << endl;
+    cout << "pipe written 1" << endl;
 
     // Create child 1
     pid1 = fork();
@@ -57,6 +57,12 @@ int main() {
             if (pid1 > 0 && pid2 > 0){
                 cout << "Both process started" << endl;
             }
+
+            sleep(10);
+            char ch2[] = "67890\n";
+            write(fildes[1], ch2, strlen(ch) - 1); // запись данных в канал
+            cout << "pipe written 2" << endl;
+
 
             int status;
             waitpid(pid1, &status, 0);
