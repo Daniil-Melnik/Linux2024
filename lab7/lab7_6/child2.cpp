@@ -16,13 +16,13 @@ char ch;
 int pipe_read_is_done;
 
 void signal_handler(int signum, siginfo_t* info, void* context) {
-    // cout << "Child 1 received response signal " << signum << " from child 2" << endl;
+    // cout << "Child 2 received response signal " << signum << " from child 1" << endl;
     if (signum == SIGQUIT){
         mainWrite = false;
-        // cout << "child 1 exit" << endl;
+        // cout << "child 2 exit" << endl;
     }
     if (signum == SIGUSR2){
-        usleep(300000);
+        //usleep(300000);
         if (pipe_read_is_done = read(fildes[0], &ch, 1) > 0){
             cout << "child 2 #" << ch << endl;
             fputc(ch, outFile);

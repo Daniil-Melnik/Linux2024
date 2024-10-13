@@ -15,14 +15,14 @@ FILE* outFile;
 bool mainWrite = true;
 
 void signal_handler(int signum, siginfo_t* info, void* context) {
-    // cout << "Child 2 received signal " << signum << " from child 1" << endl;
+    // cout << "Child 1 received signal " << signum << " from child 2" << endl;
     if (signum == SIGQUIT){
         mainWrite = false;
-        // cout << "child 2 exit" << endl;
-        usleep(300000);
+        // cout << "child 1 exit" << endl;
+        //usleep(300000);
     }
     if (signum == SIGUSR1){
-        usleep(300000);
+        //usleep(300000);
         if (pipe_read_is_done = read(fildes[0], &ch, 1) > 0){
             cout << "child 1 #" << ch << endl;
             fputc(ch, outFile);

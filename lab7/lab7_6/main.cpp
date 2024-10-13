@@ -63,11 +63,11 @@ int main(int argc, char * argv[]) {
                // cout << "while success "  << strlen(ch) << " *"<< endl;
             }
 
-            usleep(300000);
+            //usleep(300000);
             kill(0, SIGQUIT);
 
 
-            cout << "pipe written ALL" << endl;
+            // cout << "pipe written ALL" << endl;
 
             file.close();
 
