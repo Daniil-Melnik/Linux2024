@@ -72,7 +72,7 @@ int main(){
                 cout << endl << "\"\"\"" << endl;
                 cout << "Прочитано!\n";
 
-                while(recieved_local > 0)
+                while(recieved_local > 0) // ответить после себя всем молодым
                 {
                     msg l_msg;
                     msgrcv(queue_local, &l_msg, MSG_LEN, 0, 0);
@@ -86,9 +86,8 @@ int main(){
         else{
             cout << "Получен запрос от: " << (rec_msg.who) << endl;
 
-            if(allowed >= 2)
+            if(allowed >= 2) // файл прочитан - разрешить
             {
-                //если файл прочитан, то другим читать можно
                 cout << "Я уже прочитал файл, поэтому я разрешаю им читать тоже.\n";
 
                 send_allow_msg_from_current(rec_msg, queueKey);
@@ -96,17 +95,17 @@ int main(){
             }
             else //если файл не прочитан, то
             {
-                // Если программа послала запрос раньше нас, то ей даём разрешение
+                // запрос от молодого
                 if(currTime < rec_msg.time_stamp)
                 {
-                    cout << "Моя временная метка ниже, чем у него. Позвольте прочитать позже.\n";
+                    cout << "Временная метка ниже. Ответить позже.\n";
 
-                    msgsnd(queue_local, &rec_msg, MSG_LEN, 0); //вот здесь!
+                    msgsnd(queue_local, &rec_msg, MSG_LEN, 0); // разрешить после себя
                     ++recieved_local;
                 }
-                else //иначе откладываем запрос в долгий ящик
+                else // от старого - разрешить чтение
                 {
-                    cout << "Моя временная метка больше, чем у него. Поэтому я разрешаю им читать тоже.\n";
+                    cout << "Временная метка больше. Разрешить.\n";
                     send_allow_msg_from_current(rec_msg, queueKey);
                     ++serviced;
                 }
@@ -117,12 +116,12 @@ int main(){
     getchar();
     getchar();
 
-    //удаление очереди главной программой
+    //удаление очереди
     msgctl(queueKey, IPC_RMID, NULL);
     return 0;
 }
 
-//отправка сообщения с разрешением на чтение
+//отправка разрешения на чтение
 void send_allow_msg_from_current(msg &cur_msg, int queue_id)
 {
     unsigned buff;
@@ -136,7 +135,7 @@ void send_allow_msg_from_current(msg &cur_msg, int queue_id)
     print_msg(cur_msg);
 }
 
-//отправка первичного запроса
+//отправка запроса
 void sendRequest(int progID, int queueIDr, long currTime)
 {
     int prog_num = 0;
@@ -151,10 +150,6 @@ void sendRequest(int progID, int queueIDr, long currTime)
     msgsnd(queueIDr, &_msg, MSG_LEN, 0);
     cout << endl;
 
-    //msgid – идентификатор очереди, в которую посылается сообщение
-    //msgp – адрес буфера, где располагается передаваемое сообщение
-    //msgsz – длина передаваемого сообщения
-    //msgflg –флаг, определяющий режим выполнения операции
     _msg.whom = (prog_num + 2) % 3 + 1;
     cout << "Отправка msg:\n";
     print_msg(_msg);
