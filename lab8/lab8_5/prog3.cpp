@@ -32,7 +32,7 @@ int queueIDm;
 const unsigned MSG_LEN = sizeof(long) + sizeof(int) + sizeof(long long) + sizeof(int);
 
 int main(){
-    struct msqid_ds mq_stat, mq_stat_local;
+    struct msqid_ds mq_stat_local;
     int fd = open(FILENAME, O_RDONLY, S_IRUSR);
     if(fd < 0)
     {
@@ -45,11 +45,8 @@ int main(){
 
     int queueKey;
     queueKey = connectQueue();
-    queue_local = msgget(IPC_PRIVATE, 0666 | IPC_CREAT | IPC_EXCL); //идентификатор очереди
+    queue_local = msgget(IPC_PRIVATE, 0666 | IPC_CREAT); //идентификатор очереди
     sendRequest(2, queueKey, currTime);
-
-
-    //Ответы каждая программа должна принимать в свою локальную очередь.
 
     int serviced = 0; //кол-во ответов запросов на чтение
     int recieved_local = 0; // кол-во сообщений в локальной очереди
@@ -66,6 +63,7 @@ int main(){
         if (rc == MSG_LEN) {
             n_request = n_request + 1;
             cout << "Получен запрос от: " << (rec_msg.who) << endl;
+            print_msg(rec_msg);
 
             if(allowed >= 2) // файл прочитан - разрешить
             {
@@ -101,6 +99,7 @@ int main(){
         if (local_rc == MSG_LEN){
             allowed = allowed + 1;
             cout << "Чтение разрешено из: " << (rec_msg_local.who) << endl;
+            print_msg(rec_msg_local);
             if(allowed == 2) //когда получено оба разрешения, читаем
             {
                 cout << "Время = " << time(NULL) << ". Начать чтение файла: \n";
@@ -121,11 +120,12 @@ int main(){
         ++serviced;
     }
     cout << "Всем разрешено прочесть тоже.\n";
+    msgctl(queue_local, IPC_RMID, NULL);
+
     close(fd);
     return 0;
 }
 
-//отправка первичного запроса
 void sendRequest(int progID, int queueIDr, long currTime)
 {
     int prog_num = 2;

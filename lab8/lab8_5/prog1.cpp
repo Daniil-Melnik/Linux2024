@@ -47,7 +47,7 @@ int main(){
 
     int queueKey;
     queueKey = connectQueue();
-    queue_local = msgget(IPC_PRIVATE, 0666 | IPC_CREAT | IPC_EXCL); //идентификатор очереди
+    queue_local = msgget(IPC_PRIVATE, 0666 | IPC_CREAT); //идентификатор очереди
     sendRequest(0, queueKey, currTime);
 
 
@@ -66,10 +66,11 @@ int main(){
         if (rc == MSG_LEN) {
             n_request = n_request + 1;
             cout << "Получен запрос от: " << (rec_msg.who) << endl;
+            print_msg(rec_msg);
 
             if(allowed >= 2) // файл прочитан - разрешить
             {
-                // cout << "Я уже прочитал файл, поэтому я разрешаю им читать тоже.\n";
+                //cout << "Я уже прочитал файл, поэтому я разрешаю им читать тоже.\n";
 
                 send_allow_msg_from_current(rec_msg, queueKey);
                 serviced = serviced + 1;
@@ -93,7 +94,6 @@ int main(){
 
         }
     }
-    cout << "все запросы получены\n";
     while (allowed != 2) {
         msg rec_msg_local;
         int local_rc;
@@ -101,6 +101,7 @@ int main(){
         if (local_rc == MSG_LEN){
             allowed = allowed + 1;
             cout << "Чтение разрешено из: " << (rec_msg_local.who) << endl;
+            print_msg(rec_msg_local);
             if(allowed == 2) //когда получено оба разрешения, читаем
             {
                 cout << "Время = " << time(NULL) << ". Начать чтение файла: \n";
@@ -122,12 +123,16 @@ int main(){
     }
     cout << "Всем разрешено прочесть тоже.\n";
 
-    cout << "Нажмите Enter, чтобы закрыть очередь сообщений с id = " << queueKey << endl;
-    getchar();
-    getchar();
 
-    //удаление очереди
-    msgctl(queueKey, IPC_RMID, NULL);
+    msgctl(queue_local, IPC_RMID, NULL);
+
+    if (msgctl(queueKey, IPC_STAT, &mq_stat) == -1) {
+        perror("msgctl (IPC_STAT)");
+        return 1;
+    }
+    if (mq_stat.msg_qnum == 0){
+        msgctl(queueKey, IPC_RMID, NULL);
+    }
     return 0;
 }
 
@@ -143,7 +148,7 @@ void send_allow_msg_from_current(msg &cur_msg, int queue_id)
     msgsnd(cur_msg.ra_key, &cur_msg, MSG_LEN, 0);
     //cout << "\nОтправлено разрешение:" << endl;
     cout << "\nОтправлено разрешение:" << cur_msg.whom << endl;
-    //print_msg(cur_msg);
+    print_msg(cur_msg);
 }
 
 //отправка запроса
