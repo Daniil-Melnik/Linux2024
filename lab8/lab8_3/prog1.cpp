@@ -12,10 +12,10 @@ using namespace std;
 
 struct msg
 {
-    long whom; // тип сообщения
-    int who; //кому это сообщение (whom - от кого)
+    long whom; // кому
+    int who; //кто
     long time_stamp;
-    bool ra; //false-request, true-answer (read-allowed)
+    bool ra;
 };
 
 int connectQueue();

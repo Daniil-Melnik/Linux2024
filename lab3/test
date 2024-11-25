@@ -1,0 +1,54 @@
+child_1: Process ID    = 5497
+child_1: Parent ID     = 5496
+child_1: Session ID    = 3316
+child_1: GID           = 5496
+child_1: Real UID      = 1000
+child_1: Effect UID    = 1000
+child_1: Real GID      = 1000
+child_1: Effect GID    = 1000
+=======================================================
+child_2: Process ID    = 5498
+child_2: Parent ID     = 5496
+child_2: Session ID    = 3316
+child_2: GID           = 5496
+child_2: Real UID      = 1000
+child_2: Effect UID    = 1000
+child_2: Real GID      = 1000
+child_2: Effect GID    = 1000
+=======================================================
+parent: Process ID    = 5496
+parent: Parent ID     = 3316
+parent: Session ID    = 3316
+parent: GID           = 5496
+parent: Real UID      = 1000
+parent: Effect UID    = 1000
+parent: Real GID      = 1000
+parent: Effect GID    = 1000
+=======================================================
+parent: Process ID    = 5618
+parent: Parent ID     = 3316
+parent: Session ID    = 3316
+parent: GID           = 5618
+parent: Real UID      = 1000
+parent: Effect UID    = 1000
+parent: Real GID      = 1000
+parent: Effect GID    = 1000
+=======================================================
+child_2: Process ID    = 5620
+child_2: Parent ID     = 5618
+child_2: Session ID    = 3316
+child_2: GID           = 5618
+child_2: Real UID      = 1000
+child_2: Effect UID    = 1000
+child_2: Real GID      = 1000
+child_2: Effect GID    = 1000
+=======================================================
+child_1: Process ID    = 5619
+child_1: Parent ID     = 5618
+child_1: Session ID    = 3316
+child_1: GID           = 5618
+child_1: Real UID      = 1000
+child_1: Effect UID    = 1000
+child_1: Real GID      = 1000
+child_1: Effect GID    = 1000
+=======================================================

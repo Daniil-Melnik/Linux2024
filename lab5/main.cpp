@@ -6,15 +6,14 @@ using namespace std;
 void zeroDivisonErrHandler(int sig)
 {
     cout << "SIGFPE = " << sig << " \n";
-
-    // cout << "Ошибка деления на ноль. Возврат 1" << endl;
+    cout << "Ошибка деления на ноль. Возврат 1" << endl;
     exit(1);
 }
 
 void segmentationErrHandler(int sig)
 {
     cout << "SIGSEGV = " << sig << endl;
-    // cout << "Ошибка сегментации. Возврат 2" << endl;
+    cout << "Ошибка сегментации. Возврат 2" << endl;
     exit(2);
 }
 
