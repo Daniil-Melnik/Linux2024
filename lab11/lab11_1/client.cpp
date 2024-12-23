@@ -11,11 +11,11 @@ int main(int argc, char* argv[]) {
     int skClient;
     int begin_time;
     int isConnected = 0;
-    char sendMSG[10]; // отправляемое сообщение
-    char recvMSG[10]; // получаемое обработанное сообщение
+    char sendMSG[10];
+    char recvMSG[10];
     fd_set readfds;
-    sockaddr_in skServerAddr; // адрес серверного сокета
-    timeval timeoutVal; // таймаут
+    sockaddr_in skServerAddr;
+    timeval timeoutVal;
 
     const int timeout = atoi(argv[1]);
     srand(time(nullptr));
@@ -26,14 +26,14 @@ int main(int argc, char* argv[]) {
         exit(1);
     }
 
-    skServerAddr.sin_family = AF_INET; // настройка параметров серверного сокета
+    skServerAddr.sin_family = AF_INET;
     skServerAddr.sin_port = htons(3434);
     skServerAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
 
-    begin_time = time(nullptr); // время начала
+    begin_time = time(nullptr);
 
     while ((time(nullptr) - begin_time) < timeout
-    && (isConnected = connect(skClient, (sockaddr*) &skServerAddr, sizeof(skServerAddr))) < 0) // попытка соединения между сокетами
+    && (isConnected = connect(skClient, (sockaddr*) &skServerAddr, sizeof(skServerAddr))) < 0)
     {}
 
     if (isConnected == -1) {
@@ -42,17 +42,17 @@ int main(int argc, char* argv[]) {
         exit(-1);
     }
 
-    for (int i = 0; i < 10; i++) { // генерация десятизначной строки
+    for (int i = 0; i < 10; i++) {
         sendMSG[i] = '0' + rand() % 10;
     }
 
-    timeoutVal.tv_sec = timeout; // формирование таймаута
+    timeoutVal.tv_sec = timeout;
     timeoutVal.tv_usec = 0;
 
     FD_ZERO(&readfds);
     FD_SET(skClient, &readfds);
 
-    setsockopt(skClient, SOL_SOCKET, SO_SNDTIMEO, (const char*)&timeoutVal, sizeof(timeoutVal)); // установка таймаута для сокета
+    setsockopt(skClient, SOL_SOCKET, SO_SNDTIMEO, (const char*)&timeoutVal, sizeof(timeoutVal));
 
     if (int bytesSent = send(skClient, sendMSG, sizeof(sendMSG), 0) == -1){
         cout << "Timeout sending expired" << endl;
@@ -62,10 +62,10 @@ int main(int argc, char* argv[]) {
         cout << "Message sent: " << sendMSG << endl;
     }
 
-    if (select(FD_SETSIZE, &readfds, nullptr, nullptr, &timeoutVal) == 0) { // проверка реакции всех сокетов
-        cout << "Timeout for server response has expired" << endl; // ответов нет - конец
+    if (select(FD_SETSIZE, &readfds, nullptr, nullptr, &timeoutVal) == 0) {
+        cout << "Timeout for server response has expired" << endl;
     } else {
-        recv(skClient, recvMSG, sizeof(recvMSG), 0); // получение ответа
+        recv(skClient, recvMSG, sizeof(recvMSG), 0);
         cout << "Message was received: " << recvMSG << endl;
     }
 
